@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Banck</title>
+</head>
+<body style="font-family: sans-serif; max-width: 400px; margin: 40px auto;">
+
+  <h1>Banck of Inter</h1>
+
+  <h2>Saldo: R$<span id="saldo">0.00</span></h2>
+
+  <div>
+    <input type="number" id="valorDeposito" placeholder="Valor">
+    <button onclick="depositar()">Depositar</button>
+  </div>
+
+  <br>
+
+  <div>
+    <input type="number" id="valorSaque" placeholder="Valor">
+    <button onclick="sacar()">Sacar</button>
+  </div>
+
+  <p id="msg" style="color:red;"></p>
+
+<script>
+  async function atualizarSaldo() {
+    const res = await fetch('/api/conta/saldo');
+    const saldo = await res.json();
+    document.getElementById('saldo').innerText = saldo.toFixed(2);
+  }
+
+  async function depositar() {
+    const valor = parseFloat(document.getElementById('valorDeposito').value);
+    await fetch('/api/conta/depositar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ valor })
+    });
+    document.getElementById('msg').innerText = '';
+    atualizarSaldo();
+  }
+
+  async function sacar() {
+    const valor = parseFloat(document.getElementById('valorSaque').value);
+    const res = await fetch('/api/conta/sacar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ valor })
+    });
+    if (!res.ok) {
+      document.getElementById('msg').innerText = await res.text();
+    } else {
+      document.getElementById('msg').innerText = '';
+      atualizarSaldo();
+    }
+  }
+
+  atualizarSaldo();
+</script>
+
+</body>
+</html>
