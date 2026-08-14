@@ -1,43 +1,96 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<title>Banck</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banco do Inter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="banco.css">
 </head>
-<body style="font-family: sans-serif; max-width: 400px; margin: 40px auto;">
+<body>
 
-  <h1>Banck of Inter</h1>
+<div class="cartao">
 
-  <h2>Saldo: R$<span id="saldo">0.00</span></h2>
-
-  <div>
-    <input type="number" id="valorDeposito" placeholder="Valor">
-    <button onclick="depositar()">Depositar</button>
+  <div class="topo">
+    <div class="logo">Inter</div>
+    <h1>BANCO DO INTER</h1>
   </div>
 
-  <br>
-
-  <div>
-    <input type="number" id="valorSaque" placeholder="Valor">
-    <button onclick="sacar()">Sacar</button>
+  <div class="bloco-saldo">
+    <p class="rotulo-saldo">Saldo disponível</p>
+    <p class="valor-saldo" id="saldoWrap"><span>R$</span> <span id="saldo">0,00</span></p>
   </div>
 
-  <p id="msg" style="color:red;"></p>
+  <div class="abas">
+    <div class="indicador-aba" id="indicadorAba"></div>
+    <button class="aba ativa" id="abaDepositar" onclick="mudarAba('depositar')">Depositar</button>
+    <button class="aba" id="abaSacar" onclick="mudarAba('sacar')">Sacar</button>
+  </div>
+
+  <div class="painel ativo" id="painelDepositar">
+    <div class="campo">
+      <span>R$</span>
+      <input type="number" id="valorDeposito" placeholder="0,00" inputmode="decimal">
+    </div>
+    <button class="botao botao-primario" onclick="depositar()">Confirmar depósito</button>
+  </div>
+
+  <div class="painel" id="painelSacar">
+    <div class="campo">
+      <span>R$</span>
+      <input type="number" id="valorSaque" placeholder="0,00" inputmode="decimal">
+    </div>
+    <button class="botao botao-primario" onclick="sacar()">Confirmar saque</button>
+  </div>
+
+  <p id="msg" class="mensagem"></p>
+
+</div>
 
 <script>
+  function mudarAba(aba){
+    const indicador = document.getElementById('indicadorAba');
+    const abaDepositar = document.getElementById('abaDepositar');
+    const abaSacar = document.getElementById('abaSacar');
+    const painelDepositar = document.getElementById('painelDepositar');
+    const painelSacar = document.getElementById('painelSacar');
+
+    document.getElementById('msg').innerText = '';
+
+    if(aba === 'depositar'){
+      indicador.classList.remove('deslocado');
+      abaDepositar.classList.add('ativa');
+      abaSacar.classList.remove('ativa');
+      painelDepositar.classList.add('ativo');
+      painelSacar.classList.remove('ativo');
+    } else {
+      indicador.classList.add('deslocado');
+      abaSacar.classList.add('ativa');
+      abaDepositar.classList.remove('ativa');
+      painelSacar.classList.add('ativo');
+      painelDepositar.classList.remove('ativo');
+    }
+  }
+
+  function formatarMoeda(valor){
+    return valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
   async function atualizarSaldo() {
     const res = await fetch('/api/conta/saldo');
     const saldo = await res.json();
-    document.getElementById('saldo').innerText = saldo.toFixed(2);
+    document.getElementById('saldo').innerText = formatarMoeda(saldo);
   }
 
   async function depositar() {
     const valor = parseFloat(document.getElementById('valorDeposito').value);
     await fetch('/api/conta/depositar', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ valor })
     });
+    document.getElementById('valorDeposito').value = '';
     document.getElementById('msg').innerText = '';
     atualizarSaldo();
   }
@@ -52,6 +105,7 @@
     if (!res.ok) {
       document.getElementById('msg').innerText = await res.text();
     } else {
+      document.getElementById('valorSaque').value = '';
       document.getElementById('msg').innerText = '';
       atualizarSaldo();
     }
