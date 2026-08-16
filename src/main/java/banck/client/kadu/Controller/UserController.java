@@ -2,6 +2,8 @@ package banck.client.kadu.Controller;
 
 
 import banck.client.kadu.services.UserService;
+
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,12 +16,13 @@ public class UserController {
         this.userService = userService;
     }
 
-    @RequestMapping("/login")
-    public String login(String userName, String userPassword) {
-        boolean isLoggedIn = userService.userLogin(userName, userPassword);
-        if (isLoggedIn) {
-            return "Login successful!";
+    @GetMapping("/login")
+    public boolean login(String userName, String userPassword){
+        boolean userLogged = userService.userLogin(userName, userPassword);
+        if (userLogged){
+            System.out.println("Login succesfull!!");
+            return true;
         } 
-        return false ? "Login invalido" : "login errado!";
+        return false;
     }
 }
