@@ -8,12 +8,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
-    private final UserService user;
+    private UserService userService;
 
-    public UserController(UserService user){
-        this.user = user;
+    public UserController(UserService userService) {
+        this.userService = userService;
     }
-    public void login(String userName, String password, char cpf, String email){
 
+    @RequestMapping("/login")
+    public String login(String userName, String userPassword) {
+        boolean isLoggedIn = userService.userLogin(userName, userPassword);
+        if (isLoggedIn) {
+            return "Login successful!";
+        } 
+        return false ? "Login invalido" : "login errado!";
     }
 }
