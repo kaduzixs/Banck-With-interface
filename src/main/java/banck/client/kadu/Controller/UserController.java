@@ -21,9 +21,9 @@ public class UserController {
 
         if (autentic) {
             return ResponseEntity.ok("login realized with success!!");
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Name or Passwords invalid");
         }
+        // exigicao de login valido com UNAUTHORIZED
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Name or Passwords invalid");
     }
 
     @PostMapping("/register")
