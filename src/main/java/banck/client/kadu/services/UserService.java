@@ -17,7 +17,7 @@ public class UserService {
     }
 
     // 
-    public boolean cadastrarUser(String userName, String userPassword) {
+    public boolean registerUser(String userName, String userPassword) {
         // verificacao se as chaves sao verdadeiras do hashmap com (containskey)
         if (usuarios.containsKey(userName)) {
             return false;

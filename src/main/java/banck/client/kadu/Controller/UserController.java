@@ -17,23 +17,23 @@ public class UserController {
 
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestParam String userName, @RequestParam String userPassword) {
-        boolean autenticado = userService.login(userName, userPassword);
+        boolean autentic = userService.login(userName, userPassword);
 
-        if (autenticado) {
-            return ResponseEntity.ok("Login realizado com sucesso!");
+        if (autentic) {
+            return ResponseEntity.ok("login realized with success!!");
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Nome ou senha inválidos");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Name or Passwords invalid");
         }
     }
 
-    @PostMapping("/cadastrar")
-    public ResponseEntity<String> cadastrar(@RequestParam String userName, @RequestParam String userPassword) {
-        boolean cadastrado = userService.cadastrarUser(userName, userPassword);
+    @PostMapping("/register")
+    public ResponseEntity<String> register(@RequestParam String userName, @RequestParam String userPassword) {
+        boolean register = userService.registerUser(userName, userPassword);
 
-        if (cadastrado) {
-            return ResponseEntity.ok("Usuário cadastrado com sucesso!");
+        if (register) {
+            return ResponseEntity.ok("User registerd with success!!");
         } else {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Nome já cadastrado");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Name already register");
         }
     }
 }
