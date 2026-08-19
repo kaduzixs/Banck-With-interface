@@ -21,7 +21,7 @@ public class UserController {
     public ResponseEntity<String> login(@RequestParam String userName, @RequestParam String userPassword) {
         boolean autentic = userService.login(userName, userPassword);
 
-        if (autentic) {
+        if(autentic) {
             return ResponseEntity.ok("login realized with success!!");
         }
         // exigicao de login valido com UNAUTHORIZED
