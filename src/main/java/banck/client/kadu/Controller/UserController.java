@@ -1,41 +1,39 @@
 package banck.client.kadu.Controller;
 
-
+import banck.client.kadu.Repository.User;
 import banck.client.kadu.services.UserService;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
+
     @Autowired
     private UserService userService;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestParam String userName, @RequestParam String userPassword) {
-        boolean autentic = userService.login(userName, userPassword);
+    public ResponseEntity<String> login(@RequestParam String email, @RequestParam String password) {
+        Optional<User> usuario = userService.login(email, password);
 
-        if(autentic) {
-            return ResponseEntity.ok("login realized with success!!");
+        if (usuario.isPresent()) {
+            return ResponseEntity.ok("Login realized with success!!");
         }
-        // exigicao de login valido com UNAUTHORIZED
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Name or Passwords invalid");
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email or password invalid");
     }
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestParam String userName, @RequestParam String userPassword) {
-        boolean register = userService.registerUser(userName, userPassword);
+    public ResponseEntity<String> register(@RequestParam String email, @RequestParam String password) {
+        boolean registered = userService.register(email, password);
 
-        if (register) {
-            return ResponseEntity.ok("User registerd with success!!");
-        } else {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("Name already register");
+        if (registered) {
+            return ResponseEntity.ok("User registered with success!!");
         }
+        return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already registered");
     }
 }

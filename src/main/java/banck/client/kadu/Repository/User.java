@@ -6,10 +6,10 @@ import jakarta.persistence.*;
 
 
 @Entity
-@Table(name = "usuarios")
+@Table(name = "users")
 public class User{
     @Id
-    @GeneratedValue(strategy = GenerationType.INDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -22,12 +22,16 @@ public class User{
     private String password;
 
 
-    public User(){}
+    public User(String email, String password){}
 
     public User(String email, String name, String password){
         this.email = email;
         this.name = name;
         this.password = password;
+    }
+
+    public User() {
+
     }
 
     public Long getId(){
