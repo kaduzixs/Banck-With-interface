@@ -1,6 +1,7 @@
 package banck.client.kadu.services;
 
 // imports
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,6 +31,19 @@ public class UserService {
     // verificacao de login, se os logs de parametros estiverem certos o user entra
     public boolean login(String userName, String userPassword) {
         return usuarios.containsKey(userName) && usuarios.get(userName).equals(userPassword);
+    }
+
+    // Banco de dados
+    private UserRepository userRepository;
+
+    public UserRepository register(String email, String senha, String nome) {
+        UserRepository user = new UserRepository(email, senha, nome);
+        return userRepository.save(user);
+    }
+
+    public Optional<UserRepository> login(String email, String password) {
+        return userRepository.findByEmail(email)
+                .filter(usuarios -> usuarios.getPassword().equals(password));
     }
 }
    
